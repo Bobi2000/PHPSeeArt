@@ -30,6 +30,7 @@ Route::post('/savePost', [PostController::class, 'savePost'])->name('savePost');
 Route::delete('/deletePost/{id}', [PostController::class, 'deletePost'])->name('deletePost');
 
 Route::post('/likePost/{postId}', [LikeController::class, 'likePost'])->name('likePost');
+Route::post('/dislikePost/{postId}', [LikeController::class, 'dislikePost'])->name('dislikePost');
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');

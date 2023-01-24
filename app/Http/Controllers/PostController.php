@@ -32,7 +32,13 @@ class PostController extends Controller
             if(!$allLikes->isEmpty()) {
                 foreach($allLikes as $curLike) {
                     if($value->id == $curLike->postId) {
-                        $additional->isLike = true;
+                        if($curLike->like) {
+                            $additional->isLike = true;
+                        }
+                        if($curLike->dislike) {
+                            $additional->isDislike = true;
+                        }
+
                         break;
                     }
                 }
