@@ -52,6 +52,9 @@
                                 @endif
                             </button>
                         </form>
+                        <button class="bg-gray-300  text-gray-800 font-bold py-2 px-4">
+                            {{ $listPost->countLikes }}
+                        </button>
                         <form method="POST" action="{{ route('dislikePost', $listPost->id) }}">
                             @csrf
                             <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">

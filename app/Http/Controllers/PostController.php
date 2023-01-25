@@ -16,7 +16,6 @@ class PostController extends Controller
 
         $listPostsWithUsername = [];
 
-
         $allLikes = [];
 
         if (session()->get('userId')) {
@@ -29,6 +28,10 @@ class PostController extends Controller
             $additional->username = $curUser->name;
             $additional->userId = $curUser->id;
 
+            $getAllPostLiked = Like::where('postId', $value->id)->where('like', true)->get();
+            $getAllPostDisliked = Like::where('postId', $value->id)->where('dislike', true)->get();
+
+            $additional->countLikes = sizeof($getAllPostLiked) - sizeof($getAllPostDisliked);
 
             foreach ($allLikes as $curLike) {
                 if ($value->id == $curLike->postId) {
@@ -42,7 +45,6 @@ class PostController extends Controller
                     break;
                 }
             }
-
 
             array_push($listPostsWithUsername, $additional);
         }

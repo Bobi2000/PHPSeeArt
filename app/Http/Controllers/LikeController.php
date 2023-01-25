@@ -27,7 +27,13 @@ class LikeController extends Controller
             $newLike->dislike = false;
             $newLike->save();
         } else {
-            $record->delete();
+            if($record->dislike == true) {
+                $record->dislike = false;
+                $record->like = true;
+                $record->save();
+            } else {
+                $record->delete();
+            }
         }
 
         return Redirect::back();
@@ -48,7 +54,13 @@ class LikeController extends Controller
             $newLike->dislike = true;
             $newLike->save();
         } else {
-            $record->delete();
+            if($record->like == true) {
+                $record->like = false;
+                $record->dislike = true;
+                $record->save();
+            } else {
+                $record->delete();
+            }
         }
 
         return Redirect::back();
