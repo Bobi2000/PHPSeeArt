@@ -21,52 +21,33 @@ class AuthController extends Controller
 
             if(!isset($request->username)) {
                 session()->flash('username-empty', 'The username can not be empty.');
+            } else {
+                session()->flash('username-empty', '');
             }
 
             if(!isset($request->email)) {
                 session()->flash('email-empty', 'The email can not be empty.');
+            } else {
+                session()->flash('email-empty', '');
             }
 
             if(!isset($request->password)) {
                 session()->flash('password-empty', 'The password can not be empty.');
+            } else {
+                session()->flash('password-empty', '');
             }
 
             if(!isset($request->username) || !isset($request->email) || !isset($request->password)) {
                 return view('register');
             }
 
-            // $validator = validator($request->all(), [
-            //     'name' => 'required|string|max:255',
-            //     'email' => 'required|string|email|max:255|unique:users',
-            //     'password' => 'required|string|min:8|confirmed',
-            // ]);
-
-            // if ($validator->fails()) {
-            //     return redirect('register')
-            //         ->withErrors($validator)
-            //         ->withInput();
-            // }
-
-            // $emailExist = User::where('email', $validator['email'])->first();
-
-            // if ($emailExist) {
-            //     return redirect()->back()->withErrors(['email' => 'The email is already registered']);
-            // }
-
-            // $user = User::create([
-            //     'name' => $validator['name'],
-            //     'email' => $validator['email'],
-            //     'password' => Hash::make($validator['password']),
-            // ]);
-
-            // event(new Registered($user));
-            // return redirect('/');
-
             $newUser = new User;
-            Log::info(json_encode($request->all()));
             $newUser->name = $request->username;
             $newUser->email = $request->email;
-            $newUser->password = $request->password;
+            Log::info("HUI");
+            Log::info($request->password);
+            $newUser->passwordd = hash('ripemd160', $request->password);
+
 
             $usernameValidation = User::where('name', $request->username)->first();
             $emailValidation = User::where('email', $request->email)->first();
@@ -98,11 +79,13 @@ class AuthController extends Controller
         }
 
         if ($request->isMethod('post')) {
-
-            Log::info($request->username);
             $curUser = User::where('name', $request->username)->first();
 
-            Log::info($curUser);
+            if(hash('ripemd160', $request->password) != $curUser->passwordd) {
+                Log::info(hash('ripemd160', $request->password));
+                session()->flash('error', 'Your username or password may be incorrect.');
+                return redirect('login');
+            }
 
             if (isset($curUser)) {
                 session()->put('logged', true);

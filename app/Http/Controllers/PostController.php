@@ -57,7 +57,33 @@ class PostController extends Controller
         $post = Post::where('id', $postId)->get()->first();
         $curUser = User::find($post->userId);
 
-        return view('post', ['post' => $post, 'user' => $curUser]);
+        $like = null;
+
+        $isLiked = false;
+        $isDisliked = false;
+
+        if (session()->get('userId')) {
+            $like = Like::where('userId', session()->get('userId'))->where('postId', $postId)->first();
+        }
+
+        if (isset($like) && $like->like == true) {
+            $isLiked = true;
+        } else {
+            $isLiked = false;
+        }
+
+        if (isset($isDisliked) && isset($like->dislike) && $like->dislike == true) {
+            $isDisliked = true;
+        } else {
+            $isDisliked = false;
+        }
+
+        $getAllPostLiked = Like::where('postId', $postId)->where('like', true)->get();
+        $getAllPostDisliked = Like::where('postId', $postId)->where('dislike', true)->get();
+
+        $allLikes = sizeof($getAllPostLiked) - sizeof($getAllPostDisliked);
+
+        return view('post', ['post' => $post, 'user' => $curUser, 'like' => $like, 'isLiked' => $isLiked, 'isDisliked' => $isDisliked, 'allLikes' => $allLikes]);
     }
 
     public function makePost()
